@@ -29,6 +29,8 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         let myDetail = yield client.hGetAll('my-details');
         console.log(myDetail.company);
         console.log(JSON.stringify(myDetail));
+        // null means no function used
+        // 2 means intendation
         console.log(JSON.stringify(myDetail, null, 2));
         process.exit(0);
     }
