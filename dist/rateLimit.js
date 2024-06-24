@@ -38,10 +38,15 @@ function rateLimiter(req, res, next) {
             const currentTimeStamp = (0, moment_1.default)().unix();
             const windowStartTimeStamp = (0, moment_1.default)().subtract(1, "minute").unix();
             console.log(currentTimeStamp, windowStartTimeStamp);
-            // here for specific ip we set an range like from windowStartTimeStamp, currentTimeStamp
+            // Get requests made by this IP within the last minute
+            // zRangeByScore(key, min, max)
+            // The zRangeByScore command in Redis is used to retrieve a range of members in a sorted set whose scores fall within a specified range
             const requests = yield client.zRangeByScore(ip, windowStartTimeStamp, currentTimeStamp);
             console.log(requests);
             if (requests.length < 5) {
+                // Add the current request timestamp to the sorted set
+                // Add one or more members to a sorted set or update the score of existing members.
+                // zAdd()
                 yield client.zAdd(ip, [{ score: currentTimeStamp, value: currentTimeStamp.toString() }]);
                 next();
             }
@@ -50,6 +55,7 @@ function rateLimiter(req, res, next) {
             }
         }
         catch (error) {
+            console.log(error);
         }
     });
 }
